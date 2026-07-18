@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Fingerprint Report</title>
+  <meta name="description" content="100% local browser privacy, security, and fingerprinting analysis tool.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- ======== TOP BAR ======== -->
+  <header class="top-bar">
+    <div class="top-bar-inner">
+      <div class="top-bar-left">
+        <svg class="top-bar-shield" viewBox="0 0 32 32" fill="none">
+          <path d="M16 2L4 8v8c0 10.2 5.6 16.2 12 18.5 6.4-2.3 12-8.3 12-18.5V8L16 2z" fill="rgba(0,212,170,0.12)" stroke="var(--accent-green)" stroke-width="1.5"/>
+          <path d="M13 20l3 3 6-8" stroke="var(--accent-green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="top-bar-title">
+          <span class="top-bar-name">Browser Fingerprint Report</span>
+          <span class="top-bar-ver">v1.0</span>
+        </div>
+        <span class="offline-badge">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2L2 9h4l-1 5 6-7H7l1-5z"/></svg>
+          Local
+        </span>
+      </div>
+      <div class="top-bar-right">
+        <div class="score-badge" id="scoreBadge">
+          <span class="score-badge-num" id="badgeScoreNum">--</span>
+          <span class="score-badge-label">Privacy</span>
+        </div>
+        <span class="scan-time" id="scanTimestamp"></span>
+        <button class="btn-icon" id="rerunBtn" title="Re-run all tests" style="display:none">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 5.5A6.5 6.5 0 104 10.5"/><path d="M14.5 2v3.5H11"/><path d="M5.5 14.5A6.5 6.5 0 0016 9.5"/><path d="M5.5 18v-3.5H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======== MAIN ======== -->
+  <main class="main-content">
+
+    <!-- ======== LANDING PAGE ======== -->
+    <section class="landing" id="landingPage">
+      <div class="landing-card">
+        <div class="landing-shield">
+          <svg viewBox="0 0 64 64" fill="none">
+            <path d="M32 6L8 17v13c0 17.5 9.6 27.7 24 31.2 14.4-3.5 24-13.7 24-31.2V17L32 6z" fill="rgba(0,212,170,0.08)" stroke="var(--accent-green)" stroke-width="2"/>
+            <path d="M26 36l6 6 12-14" stroke="var(--accent-green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="32" cy="36" r="18" stroke="var(--accent-blue)" stroke-width="1.5" stroke-dasharray="4 3" fill="none" opacity="0.3"/>
+          </svg>
+        </div>
+        <h1 class="landing-title">Browser Fingerprint Report</h1>
+        <p class="landing-desc">Comprehensive analysis of your browser's tracking surface, fingerprinting vectors, and privacy protection status.</p>
+        <ul class="landing-features">
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="var(--accent-green)" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            13 diagnostic tests across 4 categories
+          </li>
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="var(--accent-green)" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            100% local — zero data transmitted
+          </li>
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="var(--accent-green)" stroke-width="1.5"><path d="M2 8l4 4 8-8"/></svg>
+            Takes approximately 2-3 seconds
+          </li>
+        </ul>
+        <button class="landing-btn" id="startBtn">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l12 7-12 7V3z"/></svg>
+          Start Test
+        </button>
+        <p class="landing-footer-note">No data leaves your browser. Works fully offline.</p>
+      </div>
+    </section>
+
+    <!-- ======== REPORT PAGE (hidden until scan starts) ======== -->
+    <div id="reportPage" style="display:none">
+
+      <!-- ======== RISK BAR ======== -->
+      <section class="risk-bar-section" id="scanSection">
+        <div class="risk-bar-label-row">
+          <span class="risk-bar-label">Privacy Protection</span>
+          <span class="risk-bar-threat" id="threatLabel">Scanning...</span>
+        </div>
+        <div class="risk-bar-track">
+          <div class="risk-bar-fill" id="riskBarFill"></div>
+          <div class="risk-bar-indicator" id="riskBarIndicator">
+            <span class="risk-bar-score" id="riskBarScore">--%</span>
+          </div>
+        </div>
+        <div class="risk-bar-stats" id="riskStats">
+          <span class="risk-stat rs-protected"><span class="rs-dot"></span>0 Protected</span>
+          <span class="risk-stat rs-exposed"><span class="rs-dot"></span>0 Exposed</span>
+          <span class="risk-stat rs-warning"><span class="rs-dot"></span>0 Warning</span>
+          <span class="risk-stat rs-info"><span class="rs-dot"></span>0 Info</span>
+          <span class="risk-stat rs-deductions" id="deductionsLabel">0 pts deducted</span>
+        </div>
+      </section>
+
+      <!-- ======== CATEGORY TABS ======== -->
+      <nav class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="hardware">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          <span class="cat-tab-name">Hardware</span>
+          <span class="cat-tab-dots" id="tabDots-hardware"></span>
+        </button>
+        <button class="cat-tab" data-cat="network">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12.5a8.5 8.5 0 0114 0M8 15a5 5 0 018 0"/><path d="M11 17.5a1.5 1.5 0 012 0"/><path d="M12 20v1"/></svg>
+          <span class="cat-tab-name">Network</span>
+          <span class="cat-tab-dots" id="tabDots-network"></span>
+        </button>
+        <button class="cat-tab" data-cat="software">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M8 7l4 4 4-4"/></svg>
+          <span class="cat-tab-name">Software</span>
+          <span class="cat-tab-dots" id="tabDots-software"></span>
+        </button>
+        <button class="cat-tab" data-cat="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          <span class="cat-tab-name">Tracking</span>
+          <span class="cat-tab-dots" id="tabDots-tracking"></span>
+        </button>
+      </nav>
+
+      <!-- ======== SCAN PROGRESS ======== -->
+      <div class="scan-progress" id="scanProgress">
+        <div class="scan-progress-bar">
+          <div class="scan-progress-fill" id="scanProgressFill"></div>
+        </div>
+        <span class="scan-progress-text" id="scanProgressText">Initializing...</span>
+      </div>
+
+      <!-- ======== PANEL CONTAINER ======== -->
+      <div class="panel-container">
+        <div class="panel-header" id="panelHeader">
+          <h2 id="panelTitle">Hardware &amp; Silicon Blueprint</h2>
+          <span class="panel-subtitle" id="panelSubtitle">0/5 checks</span>
+        </div>
+        <div class="panel-grid" id="panelGrid"></div>
+      </div>
+
+      <!-- ======== SAVE BUTTON ======== -->
+      <div class="save-section" id="saveSection" style="display:none">
+        <button class="save-btn" id="saveReportBtn">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 14v2a2 2 0 002 2h10a2 2 0 002-2v-2"/><path d="M10 12V4"/><path d="M6 8l4 4 4-4"/></svg>
+          Save Report as Image
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ======== DETAIL DRAWER ======== -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <button class="drawer-close" id="drawerClose">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-10 10M5 5l10 10"/></svg>
+      </button>
+      <div class="drawer-title-row">
+        <span class="drawer-title" id="drawerTitle">Test Name</span>
+        <span class="badge" id="drawerBadge">Exposed</span>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <section class="drawer-section" id="drawerDataSection">
+        <h4 class="drawer-section-title">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h12v12H4z"/><path d="M8 8h4v4H8z"/></svg>
+          Data
+        </h4>
+        <div class="drawer-data-content" id="drawerDataContent"></div>
+      </section>
+      <section class="drawer-section explanation" id="drawerExplanationSection">
+        <h4 class="drawer-section-title">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 9v4M10 7v.01"/></svg>
+          Why This Matters
+        </h4>
+        <p class="drawer-text" id="drawerExplanation"></p>
+      </section>
+      <section class="drawer-section remediation-box" id="drawerRemediationSection">
+        <h4 class="drawer-section-title">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17s5-3 5-7V5l-5-2-5 2v5c0 4 5 7 5 7z"/><path d="M8 10l1.5 1.5L12 9"/></svg>
+          How to Fix
+        </h4>
+        <p class="drawer-text" id="drawerRemediation"></p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ======== FOOTER ======== -->
+  <footer class="footer">
+    <p>100% local — All analysis runs in your browser. Zero data is transmitted anywhere.</p>
+  </footer>
+
+  <!-- ======== SCRIPTS ======== -->
+  <script src="js/hashing.js"></script>
+  <script src="js/scoring.js"></script>
+  <script src="js/tests/canvas-test.js"></script>
+  <script src="js/tests/webaudio-test.js"></script>
+  <script src="js/tests/webgl-test.js"></script>
+  <script src="js/tests/fonts-test.js"></script>
+  <script src="js/tests/hardware-test.js"></script>
+  <script src="js/tests/webrtc-test.js"></script>
+  <script src="js/tests/network-test.js"></script>
+  <script src="js/tests/locale-test.js"></script>
+  <script src="js/tests/browser-test.js"></script>
+  <script src="js/tests/bot-detection.js"></script>
+  <script src="js/tests/apis-test.js"></script>
+  <script src="js/tests/storage-test.js"></script>
+  <script src="js/tests/permissions-test.js"></script>
+  <script src="js/save-report.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
