@@ -49,6 +49,8 @@ window.PrivacyTester = window.PrivacyTester || {};
       compressor.connect(analyser);
       oscillator.start(0);
 
+      await new Promise(function(resolve) { setTimeout(resolve, 80); });
+
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
       analyser.getByteFrequencyData(dataArray);

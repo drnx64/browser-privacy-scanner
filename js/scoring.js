@@ -7,18 +7,25 @@ window.PrivacyTester = window.PrivacyTester || {};
   let score = 100;
   let finalized = false;
 
+  function reset() {
+    deductions.length = 0;
+    for (var k in results) delete results[k];
+    score = 100;
+    finalized = false;
+  }
+
   function registerResult(key, data) {
     results[key] = data;
     if (data.deduction && !finalized) {
-      deductions.push({ key, deduction: data.deduction, reason: data.summary });
+      deductions.push({ key, deduction: data.deduction, reason: data.remediation || data.summary });
     }
   }
 
   function calculateScore() {
     finalized = true;
     score = 100;
-    for (const d of deductions) {
-      score = Math.max(0, score - d.deduction);
+    for (var i = 0; i < deductions.length; i++) {
+      score = Math.max(0, score - deductions[i].deduction);
     }
     return Math.round(score);
   }
@@ -40,22 +47,29 @@ window.PrivacyTester = window.PrivacyTester || {};
   }
 
   function getSummary() {
-    const total = Object.keys(results).length;
-    const blocked = Object.values(results).filter(r => r.status === 'blocked').length;
-    const exposed = Object.values(results).filter(r => r.status === 'exposed').length;
-    const warnings = Object.values(results).filter(r => r.status === 'warning').length;
-    const infos = Object.values(results).filter(r => r.status === 'info').length;
-    return { total, blocked, exposed, warnings, infos };
+    var vals = Object.values(results);
+    var total = vals.length;
+    var blocked = 0, exposed = 0, warnings = 0, infos = 0;
+    for (var i = 0; i < vals.length; i++) {
+      switch (vals[i].status) {
+        case 'blocked': blocked++; break;
+        case 'exposed': exposed++; break;
+        case 'warning': warnings++; break;
+        case 'info': infos++; break;
+      }
+    }
+    return { total: total, blocked: blocked, exposed: exposed, warnings: warnings, infos: infos };
   }
 
   ns.scoring = {
-    registerResult,
-    calculateScore,
-    getScore,
-    getDeductions,
-    getResults,
-    getResult,
-    getSummary
+    reset: reset,
+    registerResult: registerResult,
+    calculateScore: calculateScore,
+    getScore: getScore,
+    getDeductions: getDeductions,
+    getResults: getResults,
+    getResult: getResult,
+    getSummary: getSummary
   };
 
 })(window.PrivacyTester);

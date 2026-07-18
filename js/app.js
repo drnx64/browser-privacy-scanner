@@ -40,7 +40,7 @@ window.PrivacyTester = window.PrivacyTester || {};
     currentCategory = catId;
     var cat = findCat(catId);
     var results = categoryResults[catId] || (cat ? cat.tests.map(makePending) : []);
-    if (cat) ns.ui.renderPanel(catId, '', cat.title, cat.description, results);
+    if (cat) ns.ui.renderPanel(catId, '', cat.title, '', results);
   };
 
   ns.app.runAll = async function() {
@@ -48,6 +48,7 @@ window.PrivacyTester = window.PrivacyTester || {};
     this._running = true;
 
     if (ns.ui.closeDrawer) ns.ui.closeDrawer();
+    ns.scoring.reset();
 
     if ($('scanProgress')) $('scanProgress').classList.remove('complete');
     if ($('scanProgressFill')) $('scanProgressFill').style.background = 'linear-gradient(90deg, var(--accent-blue), var(--accent-green))';
@@ -77,11 +78,13 @@ window.PrivacyTester = window.PrivacyTester || {};
 
         ns.scoring.registerResult(result.key, result);
         results.push(result);
-        categoryResults[cat.id] = results.slice();
+
+        var pending = cat.tests.slice(results.length).map(makePending);
+        categoryResults[cat.id] = results.slice().concat(pending);
         completed++;
 
         if (currentCategory === cat.id) {
-          ns.ui.renderPanel(cat.id, '', cat.title, cat.description, results);
+          ns.ui.renderPanel(cat.id, '', cat.title, '', results);
         } else {
           ns.ui.updateTabDots(cat.id, categoryResults[cat.id]);
         }
@@ -90,13 +93,17 @@ window.PrivacyTester = window.PrivacyTester || {};
       }
     }
 
-    var score = ns.scoring.calculateScore();
-    ns.ui.updateRiskBar(score);
-    if ($('scanTimestamp')) $('scanTimestamp').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    if ($('rerunBtn')) $('rerunBtn').style.display = 'flex';
+    try {
+      var score = ns.scoring.calculateScore();
+      ns.ui.updateRiskBar(score);
+      if ($('scanTimestamp')) $('scanTimestamp').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if ($('rerunBtn')) $('rerunBtn').style.display = 'flex';
 
-    var saveSection = $('saveSection');
-    if (saveSection) saveSection.style.display = 'flex';
+      var saveSection = $('saveSection');
+      if (saveSection) saveSection.style.display = 'flex';
+    } catch (e) {
+      console.error('Post-scan UI update error:', e);
+    }
 
     this._running = false;
   };
@@ -115,7 +122,7 @@ window.PrivacyTester = window.PrivacyTester || {};
 
         var cat = findCat('hardware');
         var initial = categoryResults.hardware || (cat ? cat.tests.map(makePending) : []);
-        if (cat) ns.ui.renderPanel('hardware', '', cat.title, cat.description, initial);
+        if (cat) ns.ui.renderPanel('hardware', '', cat.title, '', initial);
 
         categories.forEach(function(c) {
           var dots = $('tabDots-' + c.id);

@@ -151,6 +151,88 @@
         </button>
       </div>
 
+      <!-- ======== BROWSER HARDENING GUIDE ======== -->
+      <section class="harden-section" id="hardenSection">
+        <div class="harden-header">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L3 7v6c0 6.2 3.6 10.2 9 12 5.4-1.8 9-5.8 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+          <h3>Browser Hardening Guide</h3>
+          <span class="harden-badge">Reference</span>
+        </div>
+        <p class="harden-intro">Recommended privacy settings to reduce your browser's fingerprinting surface. Apply these in your browser's settings or flags page.</p>
+
+        <div class="harden-card">
+          <button class="harden-card-header" data-target="hardenChrome">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 8v8M8 12h8"/></svg>
+            <span>Chrome / Edge / Chromium</span>
+            <svg class="harden-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="harden-card-body" id="hardenChrome">
+            <div class="harden-setting"><code>chrome://flags/#disable-webrtc</code><span>Disable WebRTC to prevent local IP leaks</span></div>
+            <div class="harden-setting"><code>chrome://flags/#enable-webrtc-hide-local-ips-with-mdns</code><span>Hide local IPs with mDNS (enabled by default in Chrome 86+)</span></div>
+            <div class="harden-setting"><code>chrome://flags/#canvas-fingerprint-blocker</code><span>Block canvas fingerprinting (experimental flag)</span></div>
+            <div class="harden-setting"><code>Settings &gt; Privacy and Security</code><span>Enable "Send a "Do Not Track" request with your browsing traffic"</span></div>
+            <div class="harden-setting"><code>Settings &gt; Privacy and Security &gt; Cookies</code><span>Block third-party cookies and disable "Allow sites to check if you have payment methods saved"</span></div>
+            <div class="harden-setting"><code>chrome://settings/content/fonts</code><span>Disable "Allow sites to access fonts" to prevent font list enumeration</span></div>
+            <div class="harden-setting"><code>chrome://settings/content/insecureContent</code><span>Block insecure content to prevent mixed-content fingerprinting</span></div>
+            <div class="harden-note">For advanced protection: Use <strong>Brave</strong> or <strong>ungoogled-chromium</strong> which include built-in fingerprinting mitigations.</div>
+          </div>
+        </div>
+
+        <div class="harden-card">
+          <button class="harden-card-header" data-target="hardenFirefox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12a7 7 0 1113.5-3.5A7 7 0 0112 19H5"/><path d="M5 15l3-3-3-3"/></svg>
+            <span>Firefox</span>
+            <svg class="harden-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="harden-card-body" id="hardenFirefox">
+            <div class="harden-setting"><code>about:config &rarr; privacy.resistFingerprinting</code><span>Set to <strong>true</strong> — This is the single most effective anti-fingerprinting flag. It spoofs timezone, screen resolution, user agent, and more.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; privacy.resistFingerprinting.autoDeclineNoUserInputCanvasPrompts</code><span>Set to <strong>true</strong> — Automatically blocks canvas access without user permission.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; webgl.disabled</code><span>Set to <strong>true</strong> — Disables WebGL, a major fingerprinting vector via GPU characteristics.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; media.peerconnection.enabled</code><span>Set to <strong>false</strong> — Disables WebRTC to prevent local and public IP leaks.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; dom.webaudio.enabled</code><span>Set to <strong>false</strong> — Disables WebAudio fingerprinting via audio processing chain.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; dom.enable_performance</code><span>Set to <strong>false</strong> — Reduces precision of timing APIs used for timing-based fingerprinting.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; browser.safebrowsing.enabled</code><span>Set to <strong>false</strong> — Prevents Safe Browsing data fetches that can be used for tracking.</span></div>
+            <div class="harden-setting"><code>about:config &rarr; network.http.referer.spoofSource</code><span>Set to <strong>true</strong> — Spoofs the Referer header to the current origin.</span></div>
+            <div class="harden-setting"><code>Settings &gt; Privacy &amp; Security</code><span>Set Enhanced Tracking Protection to <strong>Strict</strong> mode.</span></div>
+            <div class="harden-note"><strong>Tip:</strong> Consider using <strong>Firefox Multi-Account Containers</strong> + <strong>CanvasBlocker</strong> add-on for additional fingerprinting protection.</div>
+          </div>
+        </div>
+
+        <div class="harden-card">
+          <button class="harden-card-header" data-target="hardenBrave">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L3 7v6c0 6.2 3.6 10.2 9 12 5.4-1.8 9-5.8 9-12V7l-9-5z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span>Brave</span>
+            <svg class="harden-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="harden-card-body" id="hardenBrave">
+            <div class="harden-setting"><code>Settings → Shields → Trackers &amp; ads blocking</code><span>Set to <strong>Aggressive</strong> for maximum protection.</span></div>
+            <div class="harden-setting"><code>Settings → Shields → Block fingerprinting</code><span>Enable <strong>Strict</strong> mode — Brave already blocks canvas, WebAudio, and WebGL fingerprinting by default; Strict mode adds font and screen resolution protections.</span></div>
+            <div class="harden-setting"><code>Settings → Shields → Block scripts</code><span>Enable <strong>Block scripts</strong> (may break some sites — use per-site toggle).</span></div>
+            <div class="harden-setting"><code>Settings → Shields → "Strict" mode (far left)</code><span>Switch fingerprinting protection to <strong>Strict</strong>. Brave zeroes-out WebAudio frequency data and blocks canvas readback by default.</span></div>
+            <div class="harden-setting"><code>Settings → Privacy and security → Use secure connections</code><span>Set <strong>Strict</strong> HTTPS upgrade.</span></div>
+            <div class="harden-setting"><code>Settings → Privacy and security → Clear cookies on exit</code><span>Enable auto-clearing of cookies and site data.</span></div>
+            <div class="harden-setting"><code>brave://flags/#brave-tor</code><span>Enable <strong>Private window with Tor</strong> for maximum anonymity on sensitive browsing sessions.</span></div>
+            <div class="harden-note">Brave's default fingerprinting protection is already strong — but enabling <strong>Strict</strong> mode blocks font enumeration, screen resolution detection, and more.</div>
+          </div>
+        </div>
+
+        <div class="harden-card">
+          <button class="harden-card-header" data-target="hardenGeneral">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2 2"/></svg>
+            <span>General Privacy Tips</span>
+            <svg class="harden-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+          </button>
+          <div class="harden-card-body" id="hardenGeneral">
+            <div class="harden-setting"><span>Use a VPN</span><span>A VPN encrypts your traffic and masks your IP address, preventing ISP-level tracking and IP-based fingerprinting.</span></div>
+            <div class="harden-setting"><span>Use Tor Browser</span><span>Tor Browser includes the most comprehensive fingerprinting protections — all tests in this tool should return "Protected" when using Tor.</span></div>
+            <div class="harden-setting"><span>Block third-party cookies</span><span>Third-party cookies enable cross-site tracking networks. Blocking them in your browser settings greatly reduces profiling capabilities.</span></div>
+            <div class="harden-setting"><span>Use a dedicated privacy browser</span><span>Avoid using your main browser for sensitive tasks. Keep a separate hardened browser (like Brave or Firefox with resistFingerprinting) for privacy-sensitive browsing.</span></div>
+            <div class="harden-setting"><span>Disable unused browser extensions</span><span>Extensions can access your browsing data and introduce unique fingerprintable characteristics. Use only trusted, open-source extensions.</span></div>
+            <div class="harden-setting"><span>Regularly clear site data</span><span>Local storage, IndexedDB, and cache all contribute to your tracking surface. Clearing them periodically reduces long-term tracking viability.</span></div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
   </main>

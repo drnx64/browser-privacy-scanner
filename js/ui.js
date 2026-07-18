@@ -299,6 +299,20 @@ window.PrivacyTester = window.PrivacyTester || {};
         }
       });
     }
+
+    var hardenSection = document.getElementById('hardenSection');
+    if (hardenSection) {
+      hardenSection.addEventListener('click', function(e) {
+        var header = e.target.closest('.harden-card-header');
+        if (!header) return;
+        var targetId = header.getAttribute('data-target');
+        var body = document.getElementById(targetId);
+        if (!body) return;
+        var isOpen = body.classList.contains('open');
+        body.classList.toggle('open');
+        header.classList.toggle('open');
+      });
+    }
   }
 
   ns.ui.renderCompactCard = renderCompactCard;
